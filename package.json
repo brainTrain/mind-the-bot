@@ -1,0 +1,21 @@
+{
+  "name": "mind-the-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "NODE_ENV=development nodemon --inspect --trace-warnings ./index.js --environment=development"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "~8.2.0",
+    "minecraft-data": "~2.70.2",
+    "mineflayer": "~2.37.1",
+    "mineflayer-pathfinder": "~1.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "~2.0.6"
+  }
+}
