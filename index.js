@@ -10,6 +10,9 @@ const { pathfinder, Movements } = require('mineflayer-pathfinder');
 const { GoalNear, GoalFollow } = require('mineflayer-pathfinder').goals;
 const mineflayerViewer = require('prismarine-viewer').mineflayer;
 
+// globals to reuse movement declarations, maybe a bad thing, guess we'll see
+let MCData, movements;
+
 const options = {
   auth: MCAuthType,
   host: MCHostIP,
@@ -28,12 +31,11 @@ bot.loadPlugin(pathfinder);
 
 bot.once('spawn', () => {
   mineflayerViewer(bot, { port: 3000 });
+  initBotMovement();
 });
 
 bot.on('spawn', () => {
   const myPlayer = bot.players[MCMyPlayerUsername];
-  const MCData = initMCData(bot.version);
-  const movements = new Movements(bot, MCData);
 
   if (myPlayer) {
     bot.chat('broooooooooooooooooo !!!!!!');
@@ -68,6 +70,13 @@ function moveToCoordinates (bot, coordinates, movements) {
   bot.pathfinder.setGoal(goal, true);
 }
 
+
+function initBotMovement () {
+  MCData = initMCData(bot.version);
+  movements = new Movements(bot, MCData);
+}
+
 function initMCData (botVersion) {
   return require('minecraft-data')(botVersion);
 }
+
