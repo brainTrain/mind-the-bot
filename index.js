@@ -21,9 +21,9 @@ const options = {
 };
 
 const SPAWN_POINT = {
-  x: -224.570,
-  y: 67,
-  z: -125.879,
+  x: -192.278,
+  y: 68,
+  z: -22.380,
 };
 
 const bot = mineflayer.createBot(options);
