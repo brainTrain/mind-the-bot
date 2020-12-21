@@ -13,7 +13,8 @@
     "dotenv": "~8.2.0",
     "minecraft-data": "~2.70.2",
     "mineflayer": "~2.37.1",
-    "mineflayer-pathfinder": "~1.2.2"
+    "mineflayer-pathfinder": "~1.2.2",
+    "prismarine-viewer": "~1.8.0"
   },
   "devDependencies": {
     "nodemon": "~2.0.6"

@@ -6,8 +6,9 @@ const {
   MCMyPlayerUsername,
 } = require('./dotenv');
 const mineflayer = require('mineflayer');
-const { pathfinder, Movements} = require('mineflayer-pathfinder');
+const { pathfinder, Movements } = require('mineflayer-pathfinder');
 const { GoalNear, GoalFollow } = require('mineflayer-pathfinder').goals;
+const mineflayerViewer = require('prismarine-viewer').mineflayer;
 
 const options = {
   auth: MCAuthType,
@@ -25,24 +26,27 @@ const SPAWN_POINT = {
 const bot = mineflayer.createBot(options);
 bot.loadPlugin(pathfinder);
 
+bot.once('spawn', () => {
+  mineflayerViewer(bot, { port: 3000 });
+});
+
 bot.on('spawn', () => {
   const myPlayer = bot.players[MCMyPlayerUsername];
   const MCData = initMCData(bot.version);
+  const movements = new Movements(bot, MCData);
 
   if (myPlayer) {
     bot.chat('broooooooooooooooooo !!!!!!');
-    followPlayer(bot, myPlayer, MCData);
+    followPlayer(bot, myPlayer, movements);
   } else {
     bot.chat('all by myself');
-    moveToCoordinates(bot, SPAWN_POINT, MCData);
+    moveToCoordinates(bot, SPAWN_POINT, movements);
   }
 });
 
 
-function followPlayer (bot, player, MCData) {
-  const movements = new Movements(bot, MCData);
+function followPlayer (bot, player, movements) {
   const goal = new GoalFollow(player.entity, 1);
-  // const goal = new GoalNear(SPAWN_POINT.x, SPAWN_POINT.y, SPAWN_POINT.z, 1);
   
   // movement stuffs
   movements.canDig = false;
@@ -53,8 +57,7 @@ function followPlayer (bot, player, MCData) {
   bot.pathfinder.setGoal(goal, true);
 }
 
-function moveToCoordinates (bot, coordinates, MCData) {
-  const movements = new Movements(bot, MCData);
+function moveToCoordinates (bot, coordinates, movements) {
   const goal = new GoalNear(coordinates.x, coordinates.y, coordinates.z, 1);
   
   // movement stuffs
