@@ -1,16 +1,19 @@
+const mineflayer = require('mineflayer');
+const { pathfinder, Movements } = require('mineflayer-pathfinder');
+const { GoalNear, GoalFollow } = require('mineflayer-pathfinder').goals;
+const mineflayerViewer = require('prismarine-viewer').mineflayer;
+const fs = require('fs');
+
 const {
   MCHostIP,
   MCPassword,
   MCUsername,
   MCAuthType,
 } = require('./dotenv');
-const mineflayer = require('mineflayer');
-const { pathfinder, Movements } = require('mineflayer-pathfinder');
-const { GoalNear, GoalFollow } = require('mineflayer-pathfinder').goals;
-const mineflayerViewer = require('prismarine-viewer').mineflayer;
 
 // globals to reuse movement declarations, maybe a bad thing, guess we'll see
-let movements;
+// let movements, MCData;
+let MCData;
 
 const options = {
   auth: MCAuthType,
@@ -48,11 +51,15 @@ bot.on('spawn', () => {
     bot.chat('all by myself');
   }
 
-  moveToCoordinates(bot, BOT_HOME, movements);
+  // moveToCoordinates(bot, BOT_HOME, movements);
+  moveToCoordinates(bot, BOT_HOME, new Movements(bot, MCData));
 });
 
 bot.on('goal_reached', (goal) => {
-  console.log('goal', goal);
+  console.trace('shiiiiiiiittttt');
+  console.log('goal_reached', goal);
+  console.log('bot.entity.position', bot.entity.position);
+
   bot.chat('OMG I did it!!1');
 });
 
@@ -68,7 +75,9 @@ bot.on('chat', (username, message) => {
 
     if (command.includes('follow me')) {
       const player = bot.players[username];
-      followPlayer(bot, player, movements);
+      // followPlayer(bot, player, movements);
+
+      followPlayer(bot, player, new Movements(bot, MCData));
     }
 
     if (command.includes('teleport to me')) {
@@ -81,7 +90,9 @@ bot.on('chat', (username, message) => {
       command.includes('your house');
     if (shouldGoHome) {
       bot.chat('ok, going to my house... :/');
-      moveToCoordinates(bot, BOT_HOME, movements);
+      // moveToCoordinates(bot, BOT_HOME, movements);
+
+      moveToCoordinates(bot, BOT_HOME, new Movements(bot, MCData));
     }
 
     if (command.includes('fuck you')) {
@@ -94,7 +105,9 @@ bot.on('chat', (username, message) => {
       const bedBlocks = findBedBlocks();
 
       if (bedBlocks) {
-        moveToCoordinates(bot, bedBlocks.position, movements);
+        // moveToCoordinates(bot, bedBlocks.position, movements);
+
+        moveToCoordinates(bot, bedBlocks.position, new Movements(bot, MCData));
         goToSleep(bedBlocks);
       } else {
         bot.chat('can\'t find any beds, boss :(');
@@ -104,11 +117,17 @@ bot.on('chat', (username, message) => {
     const shouldGoToRollerCoaster = command.includes('rollercoaster') ||
       command.includes('roller coaster');
     if (shouldGoToRollerCoaster) {
-      moveToCoordinates(bot, ROLLER_COASTER, movements);
+      // moveToCoordinates(bot, ROLLER_COASTER, movements);
+
+      moveToCoordinates(bot, ROLLER_COASTER, new Movements(bot, MCData));
     }
 
     if (command.includes('spin')) {
       lookAround(20);
+    }
+
+    if (command.includes('restart')) {
+      restartNodemon();
     }
   }
 });
@@ -165,6 +184,7 @@ function goToSleep (bedBlocks) {
 
 function followPlayer (bot, player, movements) {
   const goal = new GoalFollow(player.entity, 1);
+  goal.goalFunction = 'followPlayer(bot, ' + JSON.stringify(player) + ')';
   
   // movement stuffs
   movements.canDig = false;
@@ -175,6 +195,7 @@ function followPlayer (bot, player, movements) {
 
 function moveToCoordinates (bot, coordinates, movements) {
   const goal = new GoalNear(coordinates.x, coordinates.y, coordinates.z, 1);
+  goal.goalFunction = 'moveToCoordinates(bot, ' + JSON.stringify(coordinates) + ')';
   
   // movement stuffs
   movements.canDig = false;
@@ -185,8 +206,9 @@ function moveToCoordinates (bot, coordinates, movements) {
 
 
 function initBotMovement () {
-  const MCData = initMCData(bot.version);
-  movements = new Movements(bot, MCData);
+  // const MCData = initMCData(bot.version);
+  MCData = initMCData(bot.version);
+  const movements = new Movements(bot, MCData);
   bot.pathfinder.setMovements(movements);
 }
 
@@ -197,4 +219,20 @@ function initMCData (botVersion) {
 // utilz
 function yourMomsNumber (min, max) {
     return Math.floor(Math.random() * (max-min + 1) + min);
+}
+
+// process handling for restarts
+process.on('uncaughtException', function (error) {
+  restartNodemon(); 
+});
+
+function restartNodemon() {
+  const filename = 'index.js';
+  const time = new Date();
+
+  try {
+    fs.utimesSync(filename, time, time);
+  } catch (error) {
+    fs.closeSync(fs.openSync(filename, 'w'));
+  }
 }
