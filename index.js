@@ -44,11 +44,11 @@ bot.on('spawn', () => {
   // -1 is to discount yourself
   if (Object.keys(bot.players).length - 1) {
     bot.chat('whaddup nerdzzz??!!1');
-    moveToCoordinates(bot, BOT_HOME, movements);
   } else {
     bot.chat('all by myself');
-    moveToCoordinates(bot, BOT_HOME, movements);
   }
+
+  moveToCoordinates(bot, BOT_HOME, movements);
 });
 
 bot.on('goal_reached', (goal) => {
