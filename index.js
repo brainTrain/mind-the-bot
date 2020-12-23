@@ -10,7 +10,7 @@ const { GoalNear, GoalFollow } = require('mineflayer-pathfinder').goals;
 const mineflayerViewer = require('prismarine-viewer').mineflayer;
 
 // globals to reuse movement declarations, maybe a bad thing, guess we'll see
-let MCData, movements;
+let movements;
 
 const options = {
   auth: MCAuthType,
@@ -185,7 +185,7 @@ function moveToCoordinates (bot, coordinates, movements) {
 
 
 function initBotMovement () {
-  MCData = initMCData(bot.version);
+  const MCData = initMCData(bot.version);
   movements = new Movements(bot, MCData);
   bot.pathfinder.setMovements(movements);
 }
