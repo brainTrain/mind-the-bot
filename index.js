@@ -170,7 +170,6 @@ function followPlayer (bot, player, movements) {
   movements.canDig = false;
 
   // bot stuffs
-  bot.pathfinder.setMovements(movements);
   bot.pathfinder.setGoal(goal, true);
 }
 
@@ -181,7 +180,6 @@ function moveToCoordinates (bot, coordinates, movements) {
   movements.canDig = false;
 
   // bot stuffs
-  bot.pathfinder.setMovements(movements);
   bot.pathfinder.setGoal(goal);
 }
 
@@ -189,6 +187,7 @@ function moveToCoordinates (bot, coordinates, movements) {
 function initBotMovement () {
   MCData = initMCData(bot.version);
   movements = new Movements(bot, MCData);
+  bot.pathfinder.setMovements(movements);
 }
 
 function initMCData (botVersion) {
