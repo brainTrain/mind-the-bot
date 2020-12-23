@@ -216,6 +216,10 @@ process.on('uncaughtException', function (error) {
 });
 
 function restartNodemon() {
+  // lovingly lifted from https://remarkablemark.org/blog/2017/12/17/touch-file-nodejs/
+  // > fs.utimesSync is used here to prevent existing file contents from being overwritten.
+  // > It also updates the last modification timestamp of the file, which is consistent with what POSIX touch does.
+
   const filename = 'index.js';
   const time = new Date();
 
