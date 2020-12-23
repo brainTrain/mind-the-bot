@@ -12,8 +12,7 @@ const {
 } = require('./dotenv');
 
 // globals to reuse movement declarations, maybe a bad thing, guess we'll see
-// let movements, MCData;
-let MCData;
+let movements;
 
 const options = {
   auth: MCAuthType,
@@ -51,8 +50,7 @@ bot.on('spawn', () => {
     bot.chat('all by myself');
   }
 
-  // moveToCoordinates(bot, BOT_HOME, movements);
-  moveToCoordinates(bot, BOT_HOME, new Movements(bot, MCData));
+  moveToCoordinates(bot, BOT_HOME, movements);
 });
 
 bot.on('goal_reached', (goal) => {
@@ -75,9 +73,7 @@ bot.on('chat', (username, message) => {
 
     if (command.includes('follow me')) {
       const player = bot.players[username];
-      // followPlayer(bot, player, movements);
-
-      followPlayer(bot, player, new Movements(bot, MCData));
+      followPlayer(bot, player, movements);
     }
 
     if (command.includes('teleport to me')) {
@@ -90,9 +86,7 @@ bot.on('chat', (username, message) => {
       command.includes('your house');
     if (shouldGoHome) {
       bot.chat('ok, going to my house... :/');
-      // moveToCoordinates(bot, BOT_HOME, movements);
-
-      moveToCoordinates(bot, BOT_HOME, new Movements(bot, MCData));
+      moveToCoordinates(bot, BOT_HOME, movements);
     }
 
     if (command.includes('fuck you')) {
@@ -105,9 +99,7 @@ bot.on('chat', (username, message) => {
       const bedBlocks = findBedBlocks();
 
       if (bedBlocks) {
-        // moveToCoordinates(bot, bedBlocks.position, movements);
-
-        moveToCoordinates(bot, bedBlocks.position, new Movements(bot, MCData));
+        moveToCoordinates(bot, bedBlocks.position, movements);
         goToSleep(bedBlocks);
       } else {
         bot.chat('can\'t find any beds, boss :(');
@@ -117,9 +109,7 @@ bot.on('chat', (username, message) => {
     const shouldGoToRollerCoaster = command.includes('rollercoaster') ||
       command.includes('roller coaster');
     if (shouldGoToRollerCoaster) {
-      // moveToCoordinates(bot, ROLLER_COASTER, movements);
-
-      moveToCoordinates(bot, ROLLER_COASTER, new Movements(bot, MCData));
+      moveToCoordinates(bot, ROLLER_COASTER, movements);
     }
 
     if (command.includes('spin')) {
@@ -206,9 +196,8 @@ function moveToCoordinates (bot, coordinates, movements) {
 
 
 function initBotMovement () {
-  // const MCData = initMCData(bot.version);
-  MCData = initMCData(bot.version);
-  const movements = new Movements(bot, MCData);
+  const MCData = initMCData(bot.version);
+  movements = new Movements(bot, MCData);
   bot.pathfinder.setMovements(movements);
 }
 
