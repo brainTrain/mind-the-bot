@@ -22,15 +22,15 @@ const options = {
 };
 
 const BOT_HOME = {
-  x: -192.278,
+  x: -192,
   y: 68,
-  z: -22.380,
+  z: -22,
 };
 
 const ROLLER_COASTER = {
-  x: -268.284,
+  x: -268,
   y: 67,
-  z: -264.201,
+  z: -264,
 };
 const ACTION_PHRASE = 'hey asshole';
 
