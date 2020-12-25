@@ -3,6 +3,7 @@ const { pathfinder, Movements } = require('mineflayer-pathfinder');
 const { GoalNear, GoalFollow } = require('mineflayer-pathfinder').goals;
 const mineflayerViewer = require('prismarine-viewer').mineflayer;
 const fs = require('fs');
+const { fetchRandomQuote } = require('./get-quote');
 
 const {
   MCHostIP,
@@ -54,7 +55,7 @@ bot.on('spawn', () => {
 });
 
 bot.on('goal_reached', (goal) => {
-  console.trace('shiiiiiiiittttt');
+  console.trace('goal stack trace:');
   console.log('goal_reached', goal);
   console.log('bot.entity.position', bot.entity.position);
 
@@ -74,10 +75,14 @@ bot.on('chat', (username, message) => {
     if (command.includes('follow me')) {
       const player = bot.players[username];
       followPlayer(bot, player, movements);
+
+      return;
     }
 
     if (command.includes('teleport to me')) {
       bot.chat(`/teleport ${username}!`);
+
+      return;
     }
 
     const shouldGoHome = command.includes('go home') ||
@@ -87,10 +92,14 @@ bot.on('chat', (username, message) => {
     if (shouldGoHome) {
       bot.chat('ok, going to my house... :/');
       moveToCoordinates(bot, BOT_HOME, movements);
+
+      return;
     }
 
     if (command.includes('fuck you')) {
       bot.chat(`fuck you too ${username}!`);
+
+      return;
     }
 
     const shouldGoToBed = command.includes('to bed') ||
@@ -104,21 +113,35 @@ bot.on('chat', (username, message) => {
       } else {
         bot.chat('can\'t find any beds, boss :(');
       }
+
+      return;
     }
 
     const shouldGoToRollerCoaster = command.includes('rollercoaster') ||
       command.includes('roller coaster');
     if (shouldGoToRollerCoaster) {
       moveToCoordinates(bot, ROLLER_COASTER, movements);
+
+      return;
     }
 
     if (command.includes('spin')) {
       lookAround(20);
+
+      return;
     }
 
     if (command.includes('restart')) {
       restartNodemon();
+
+      return;
     }
+
+    // if none match, fetch and display a random quote from one of the endpoints
+    fetchRandomQuote()
+      .then((data) => {
+        bot.chat(data.quote);
+      });
   }
 });
 
@@ -213,6 +236,7 @@ function yourMomsNumber (min, max) {
 // process handling for restarts
 process.on('uncaughtException', function (error) {
   restartNodemon(); 
+  console.error(error);
 });
 
 function restartNodemon() {
