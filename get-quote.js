@@ -9,7 +9,7 @@ function fetchRandomTrumpQuote() {
 function fetchRandomAlwaysSunnyQuote() {
   return axios.get('http://sunnyquotes.net/q.php?random')
     .then((response) => normalizeResponse(response.data.sqQuote))
-    .catch((error) => console.error('tronalddump.io fetch error:', error));
+    .catch((error) => console.error('sunnyquotes.net fetch error:', error));
 }
 
 const RANDOM_QUOTE_FUNCTIONS = [fetchRandomAlwaysSunnyQuote, fetchRandomTrumpQuote];
