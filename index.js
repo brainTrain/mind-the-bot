@@ -230,7 +230,7 @@ function initMCData (botVersion) {
 
 // utilz
 function yourMomsNumber (min, max) {
-    return Math.floor(Math.random() * (max-min + 1) + min);
+  return Math.floor(Math.random() * (max-min + 1) + min);
 }
 
 // process handling for restarts

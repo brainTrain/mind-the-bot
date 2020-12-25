@@ -12,8 +12,9 @@ function fetchRandomAlwaysSunnyQuote() {
     .catch((error) => console.error('tronalddump.io fetch error:', error));
 }
 
+const RANDOM_QUOTE_FUNCTIONS = [fetchRandomAlwaysSunnyQuote, fetchRandomTrumpQuote];
 function fetchRandomQuote() {
-  const quoteRequest = yourMomsNumber(0, 10) % 2 === 0 ? fetchRandomAlwaysSunnyQuote : fetchRandomTrumpQuote;
+  const quoteRequest = RANDOM_QUOTE_FUNCTIONS[yourMomsNumber(0, RANDOM_QUOTE_FUNCTIONS.length -1)] || RANDOM_QUOTE_FUNCTIONS[0];
   return quoteRequest();
 }
 
@@ -29,5 +30,5 @@ module.exports = {
 
 // utilz
 function yourMomsNumber (min, max) {
-    return Math.floor(Math.random() * (max-min + 1) + min);
+  return Math.floor(Math.random() * (max-min + 1) + min);
 }
