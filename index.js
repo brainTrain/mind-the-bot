@@ -141,6 +141,9 @@ bot.on('chat', (username, message) => {
     fetchRandomQuote()
       .then((data) => {
         bot.chat(data.quote);
+      })
+      .catch(() => {
+        bot.chat('derp derp, failed to fetch quote for some reason :/');
       });
   }
 });
