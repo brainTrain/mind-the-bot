@@ -24,6 +24,12 @@ function fetchRandomNicolasCageQuote() {
     .catch((error) => console.error('nicolas-cage-quotes fetch error:', error));
 }
 
+function fetchRandomTheBigLebowskieQuote() {
+  return axios.get('http://lebowski.me/api/quotes/random')
+    .then((response) => normalizeResponse(response.data.quote.lines[0].text))
+    .catch((error) => console.error('lebowski.me fetch error:', error));
+}
+
 // this response is kinda big and it looks like it's a static list so let's cache for good guy greg reasonz
 let TYPE_FIT_QUOTE_CACHE;
 function fetchRandomTypeFitQuote() {
@@ -56,6 +62,7 @@ const RANDOM_QUOTE_FUNCTIONS = [
   fetchRandomSeinfeldQuote,
   fetchRandomNicolasCageQuote,
   fetchRandomTypeFitQuote,
+  fetchRandomTheBigLebowskieQuote,
 ];
 
 function fetchRandomQuote() {
@@ -79,6 +86,7 @@ module.exports = {
   fetchRandomSeinfeldQuote: fetchRandomSeinfeldQuote,
   fetchRandomTrumpQuote: fetchRandomTrumpQuote,
   fetchRandomTypeFitQuote: fetchRandomTypeFitQuote,
+  fetchRandomTheBigLebowskieQuote: fetchRandomTheBigLebowskieQuote,
 }
 
 // utilz
