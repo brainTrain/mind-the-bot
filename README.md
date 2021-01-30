@@ -1,4 +1,5 @@
 # minecraft botz
 
-`npm instal`
+`npm install`
+
 `npm start`
