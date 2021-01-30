@@ -11,7 +11,12 @@ const {
   MCUsername,
   MCAuthType,
 } = require('./dotenv');
-
+const {
+  BOT_HOME,
+  ROLLER_COASTER,
+  SPA,
+} = require('./locations');
+ 
 // globals to reuse movement declarations, maybe a bad thing, guess we'll see
 let movements;
 
@@ -22,21 +27,13 @@ const options = {
   password: MCPassword,
 };
 
-const BOT_HOME = {
-  x: -192,
-  y: 68,
-  z: -22,
-};
-
-const ROLLER_COASTER = {
-  x: -268,
-  y: 67,
-  z: -264,
-};
 const ACTION_PHRASE = 'hey asshole';
 
 const bot = mineflayer.createBot(options);
 bot.loadPlugin(pathfinder);
+
+// globals for re-use
+let MCData;
 
 bot.once('spawn', () => {
   mineflayerViewer(bot, { port: 3000 });
@@ -44,7 +41,7 @@ bot.once('spawn', () => {
 });
 
 bot.on('spawn', () => {
-  // -1 is to discount yourself
+  // -1 is to discount yourself (the bot)
   if (Object.keys(bot.players).length - 1) {
     bot.chat('whaddup nerdzzz??!!1');
   } else {
@@ -54,8 +51,13 @@ bot.on('spawn', () => {
   moveToCoordinates(bot, BOT_HOME, movements);
 });
 
+bot.on('health', () => {
+  if (bot.health < 15) {
+    eatUntilFull();
+  }
+});
+
 bot.on('goal_reached', (goal) => {
-  console.trace('goal stack trace:');
   console.log('goal_reached', goal);
   console.log('bot.entity.position', bot.entity.position);
 
@@ -125,8 +127,34 @@ bot.on('chat', (username, message) => {
       return;
     }
 
+    if (command.includes('spa')) {
+      moveToCoordinates(bot, SPA, movements);
+
+      return;
+    }
+
     if (command.includes('spin')) {
       lookAround(20);
+
+      return;
+    }
+
+    if (command.includes('eat')) {
+      eatUntilFull();
+
+      return;
+    }
+
+    if (command.includes('health')) {
+      bot.chat(`my health is at ${bot.health} and my food is at ${bot.food}`);
+
+      return;
+    }
+
+    if (command.includes('inventory')) {
+      console.log(bot.inventory);
+
+      bot.chat(`I have ${displayInventoryItems()}`);
 
       return;
     }
@@ -147,6 +175,17 @@ bot.on('chat', (username, message) => {
       });
   }
 });
+
+function displayInventoryItems () {
+  const inventoryNameList = getInventoryItems().map((item) => item.displayName);
+
+  return inventoryNameList.join(', ');
+}
+
+function getInventoryItems () {
+  // filters out null items
+  return bot.inventory.slots.filter((item) => item);
+}
 
 function lookAround (total, prevYaw, prevPitch, totalSame) {
   let yaw = yourMomsNumber(0, 10) ? 0 : 3.142;
@@ -176,6 +215,40 @@ function lookAround (total, prevYaw, prevPitch, totalSame) {
   });
 }
 
+function equipFood(callback) {
+  const items = getInventoryItems();
+  // just get the first food item and break out
+  const MCDataFoodNames = MCData.foodsArray.map((item) => item.name);
+  const food = items.find((item) => MCDataFoodNames.includes(item.name));
+  console.log('food', food);
+
+  if (food) {
+    bot
+      .equip(food, 'hand')
+      .then(callback)
+      .catch((error) => console.error('error in equipFood', error));
+  }
+}
+
+function eatUntilFull () {
+  console.log('try an eat')
+  if (bot.food < 20) {
+    equipFood(() => {
+      console.log('snaps I\'m hungry');
+      eat()
+        .then(eatUntilFull)
+        .catch((error) => console.error('eating error', error));
+    });
+  } else {
+    console.log('done eating');
+  }
+}
+
+function eat () {
+  console.log(bot.food);
+  return bot.consume();
+}
+
 function findBedBlocks () {
   const bedBlocks = bot.findBlock({
     maxDistance: 5,
@@ -199,19 +272,21 @@ function goToSleep (bedBlocks) {
 }
 
 function followPlayer (bot, player, movements) {
+  // if the player's too far away their entity will be null and you won't be able to follow them
+  if (!player.entity) {
+    console.error('ZOMGZ this player has no entity!!1', player);
+    return;
+  }
   const goal = new GoalFollow(player.entity, 1);
-  goal.goalFunction = 'followPlayer(bot, ' + JSON.stringify(player) + ')';
   
   // movement stuffs
   movements.canDig = false;
-
   // bot stuffs
   bot.pathfinder.setGoal(goal, true);
 }
 
 function moveToCoordinates (bot, coordinates, movements) {
   const goal = new GoalNear(coordinates.x, coordinates.y, coordinates.z, 1);
-  goal.goalFunction = 'moveToCoordinates(bot, ' + JSON.stringify(coordinates) + ')';
   
   // movement stuffs
   movements.canDig = false;
@@ -222,7 +297,7 @@ function moveToCoordinates (bot, coordinates, movements) {
 
 
 function initBotMovement () {
-  const MCData = initMCData(bot.version);
+  MCData = initMCData(bot.version);
   movements = new Movements(bot, MCData);
   bot.pathfinder.setMovements(movements);
 }
