@@ -10,6 +10,7 @@ const {
   MCPassword,
   MCUsername,
   MCAuthType,
+  actionPhrase,
 } = require('./dotenv');
 const {
   BOT_HOME,
@@ -26,8 +27,6 @@ const options = {
   username: MCUsername,
   password: MCPassword,
 };
-
-const ACTION_PHRASE = 'hey asshole';
 
 const bot = mineflayer.createBot(options);
 bot.loadPlugin(pathfinder);
@@ -69,10 +68,10 @@ bot.on('chat', (username, message) => {
   console.log('message', message);
   const hasAction = message
     .toLowerCase()
-    .includes(ACTION_PHRASE);
+    .includes(actionPhrase);
 
   if (username !== MCUsername && hasAction) {
-    const command = message.split(ACTION_PHRASE)[1].toLowerCase();
+    const command = message.split(actionPhrase)[1].toLowerCase();
 
     if (command.includes('follow me')) {
       const player = bot.players[username];
