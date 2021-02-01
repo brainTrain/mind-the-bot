@@ -41,13 +41,14 @@ bot.once('spawn', () => {
 
 bot.on('spawn', () => {
   // -1 is to discount yourself (the bot)
-  if (Object.keys(bot.players).length - 1) {
+  const hasPlayers = Object.keys(bot.players).length - 1;
+  if (hasPlayers) {
     bot.chat('whaddup nerdzzz??!!1');
   } else {
     bot.chat('all by myself');
   }
 
-  moveToCoordinates(bot, BOT_HOME, movements);
+  moveToCoordinates(bot, BOT_HOME, movements, 'just got home');
 });
 
 bot.on('health', () => {
@@ -57,10 +58,9 @@ bot.on('health', () => {
 });
 
 bot.on('goal_reached', (goal) => {
+  const botMessage = goal.message || 'OMG I did it!!1';
+  bot.chat(botMessage);
   console.log('goal_reached', goal);
-  console.log('bot.entity.position', bot.entity.position);
-
-  bot.chat('OMG I did it!!1');
 });
 
 bot.on('chat', (username, message) => {
@@ -76,6 +76,7 @@ bot.on('chat', (username, message) => {
     if (command.includes('follow me')) {
       const player = bot.players[username];
       followPlayer(bot, player, movements);
+      bot.chat(`ok ${username}, hold your horses, I'm comin`);
 
       return;
     }
@@ -92,7 +93,7 @@ bot.on('chat', (username, message) => {
       command.includes('your house');
     if (shouldGoHome) {
       bot.chat('ok, going to my house... :/');
-      moveToCoordinates(bot, BOT_HOME, movements);
+      moveToCoordinates(bot, BOT_HOME, movements, 'just got home');
 
       return;
     }
@@ -121,13 +122,15 @@ bot.on('chat', (username, message) => {
     const shouldGoToRollerCoaster = command.includes('rollercoaster') ||
       command.includes('roller coaster');
     if (shouldGoToRollerCoaster) {
-      moveToCoordinates(bot, ROLLER_COASTER, movements);
+      bot.chat('sweet, roller coaster time!');
+      moveToCoordinates(bot, ROLLER_COASTER, movements, 'just got to the roller coaster!');
 
       return;
     }
 
     if (command.includes('spa')) {
-      moveToCoordinates(bot, SPA, movements);
+      bot.chat('spa time');
+      moveToCoordinates(bot, SPA, movements, 'What is your spaghetti policy here?');
 
       return;
     }
@@ -219,7 +222,6 @@ function equipFood(callback) {
   // just get the first food item and break out
   const MCDataFoodNames = MCData.foodsArray.map((item) => item.name);
   const food = items.find((item) => MCDataFoodNames.includes(item.name));
-  console.log('food', food);
 
   if (food) {
     bot
@@ -230,16 +232,12 @@ function equipFood(callback) {
 }
 
 function eatUntilFull () {
-  console.log('try an eat')
   if (bot.food < 20) {
     equipFood(() => {
-      console.log('snaps I\'m hungry');
       eat()
         .then(eatUntilFull)
         .catch((error) => console.error('eating error', error));
     });
-  } else {
-    console.log('done eating');
   }
 }
 
@@ -274,6 +272,7 @@ function followPlayer (bot, player, movements) {
   // if the player's too far away their entity will be null and you won't be able to follow them
   if (!player.entity) {
     console.error('ZOMGZ this player has no entity!!1', player);
+    bot.chat(`you're too far away ${player.username}`);
     return;
   }
   const goal = new GoalFollow(player.entity, 1);
@@ -284,8 +283,11 @@ function followPlayer (bot, player, movements) {
   bot.pathfinder.setGoal(goal, true);
 }
 
-function moveToCoordinates (bot, coordinates, movements) {
+function moveToCoordinates (bot, coordinates, movements, message) {
   const goal = new GoalNear(coordinates.x, coordinates.y, coordinates.z, 1);
+  if (message) {
+    goal.message = message;
+  }
   
   // movement stuffs
   movements.canDig = false;
