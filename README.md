@@ -1,5 +1,5 @@
 # minecraft botz
-_This bot remote controlls a normal minecraft account, if you want to play with your bot the easiest way is to just pay for a new mojang account for your bot._
+_This bot remote controls a normal minecraft account, if you want to play with your bot the easiest way is to just pay for a new mojang account for your bot._
 
 _This bot is built using [mineflayer](https://github.com/PrismarineJS/mineflayer)_
 
