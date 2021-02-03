@@ -72,11 +72,21 @@ bot.on('chat', (username, message) => {
 
   if (username !== MCUsername && hasAction) {
     const command = message.split(actionPhrase)[1].toLowerCase();
+    const player = bot.players[username];
+
+    // unfollow needs to happen before follow cuz
+    // 'follow me' is a substring of 'unfollow me'
+    const shouldUnFollow = command.includes('unfollow me') ||
+      command.includes('leave me alone');
+    if (shouldUnFollow) {
+      cancelGoal(bot, player, movements);
+
+      return;
+    }
 
     if (command.includes('follow me')) {
-      const player = bot.players[username];
-      followPlayer(bot, player, movements);
       bot.chat(`ok ${username}, hold your horses, I'm comin`);
+      followPlayer(bot, player, movements);
 
       return;
     }
@@ -154,7 +164,7 @@ bot.on('chat', (username, message) => {
     }
 
     if (command.includes('inventory')) {
-      console.log(bot.inventory);
+      console.log('inventory', bot.inventory);
 
       bot.chat(`I have ${displayInventoryItems()}`);
 
@@ -242,7 +252,6 @@ function eatUntilFull () {
 }
 
 function eat () {
-  console.log(bot.food);
   return bot.consume();
 }
 
@@ -281,6 +290,10 @@ function followPlayer (bot, player, movements) {
   movements.canDig = false;
   // bot stuffs
   bot.pathfinder.setGoal(goal, true);
+}
+
+function cancelGoal (bot, player, movements) {
+  bot.pathfinder.setGoal(null);
 }
 
 function moveToCoordinates (bot, coordinates, movements, message) {
