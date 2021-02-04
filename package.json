@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "NODE_ENV=development nodemon --inspect --trace-warnings ./index.js --environment=development"
+    "start": "NODE_ENV=development nodemon --trace-warnings ./index.js --environment=development"
   },
   "author": "",
   "license": "ISC",
