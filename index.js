@@ -1,9 +1,10 @@
 const mineflayer = require('mineflayer');
 const { pathfinder, Movements } = require('mineflayer-pathfinder');
 const { GoalNear, GoalFollow } = require('mineflayer-pathfinder').goals;
-const mineflayerViewer = require('prismarine-viewer').mineflayer;
+// const mineflayerViewer = require('prismarine-viewer').mineflayer;
 const fs = require('fs');
 const { fetchRandomQuote } = require('./get-quote');
+console.log(new Date(), 'starting a thing');
 
 const {
   MCHostIP,
@@ -35,8 +36,10 @@ bot.loadPlugin(pathfinder);
 let MCData;
 
 bot.once('spawn', () => {
-  mineflayerViewer(bot, { port: 3000 });
+  // mineflayerViewer(bot, { port: 3000 });
   initBotMovement();
+  initBotSpeech();
+  console.log(new Date(), 'oh dang a first spawn');
 });
 
 bot.on('spawn', () => {
@@ -60,12 +63,12 @@ bot.on('health', () => {
 bot.on('goal_reached', (goal) => {
   const botMessage = goal.message || 'OMG I did it!!1';
   bot.chat(botMessage);
-  console.log('goal_reached', goal);
+  console.log(new Date(), 'goal_reached', goal);
 });
 
 bot.on('chat', (username, message) => {
-  console.log('username', username);
-  console.log('message', message);
+  console.log(new Date(), 'username', username);
+  console.log(new Date(),'message', message);
   const hasAction = message
     .toLowerCase()
     .includes(actionPhrase);
@@ -79,6 +82,7 @@ bot.on('chat', (username, message) => {
     const shouldUnFollow = command.includes('unfollow me') ||
       command.includes('leave me alone');
     if (shouldUnFollow) {
+      bot.chat(`fine, ${username}, peace oooot`);
       cancelGoal(bot, player, movements);
 
       return;
@@ -164,7 +168,7 @@ bot.on('chat', (username, message) => {
     }
 
     if (command.includes('inventory')) {
-      console.log('inventory', bot.inventory);
+      console.log(new Date(), 'inventory', bot.inventory);
 
       bot.chat(`I have ${displayInventoryItems()}`);
 
@@ -178,15 +182,20 @@ bot.on('chat', (username, message) => {
     }
 
     // if none match, fetch and display a random quote from one of the endpoints
-    fetchRandomQuote()
-      .then((data) => {
-        bot.chat(data.quote);
-      })
-      .catch(() => {
-        bot.chat('derp derp, failed to fetch quote for some reason :/');
-      });
+    sayQuote();
   }
 });
+
+function sayQuote () {
+  // if none match, fetch and display a random quote from one of the endpoints
+  return fetchRandomQuote()
+    .then((data) => {
+      bot.chat(data.quote);
+    })
+    .catch(() => {
+      bot.chat('derp derp, failed to fetch quote for some reason :/');
+    });
+}
 
 function displayInventoryItems () {
   const inventoryNameList = getInventoryItems().map((item) => item.displayName);
@@ -309,6 +318,11 @@ function moveToCoordinates (bot, coordinates, movements, message) {
   bot.pathfinder.setGoal(goal);
 }
 
+
+function initBotSpeech () {
+  // one hour
+  setInterval(sayQuote, 1000 * 60 * 60);
+}
 
 function initBotMovement () {
   MCData = initMCData(bot.version);
