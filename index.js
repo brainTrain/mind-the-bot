@@ -82,6 +82,7 @@ bot.on('chat', (username, message) => {
     const shouldUnFollow = command.includes('unfollow me') ||
       command.includes('leave me alone');
     if (shouldUnFollow) {
+      bot.chat(`fine, ${username}, peace oooot`);
       cancelGoal(bot, player, movements);
 
       return;
