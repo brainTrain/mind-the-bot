@@ -175,6 +175,15 @@ bot.on('chat', (username, message) => {
       return;
     }
 
+    if (command.includes('stats')) {
+      console.log(new Date(), 'inventory', bot.inventory);
+
+      bot.chat(`my health is at ${bot.health} and my food is at ${bot.food}`);
+      bot.chat(`I have ${displayInventoryItems()}`);
+
+      return;
+    }
+
     if (command.includes('restart')) {
       restartNodemon();
 
@@ -257,6 +266,8 @@ function eatUntilFull () {
         .then(eatUntilFull)
         .catch((error) => console.error('eating error', error));
     });
+  } else {
+    bot.chat('me no hungee');
   }
 }
 
