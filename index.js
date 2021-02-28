@@ -3,20 +3,29 @@ const { pathfinder, Movements } = require('mineflayer-pathfinder');
 const { GoalNear, GoalFollow } = require('mineflayer-pathfinder').goals;
 // const mineflayerViewer = require('prismarine-viewer').mineflayer;
 const fs = require('fs');
-const { fetchRandomQuote } = require('./get-quote');
+const {
+  fetchRandomCatFact,
+  fetchRandomChuckNorrisJoke,
+  fetchRandomDadJoke,
+  fetchRandomFact,
+  fetchRandomJoke,
+  fetchRandomQuote,
+  fetchRandomResponse,
+} = require('./get-quote');
 console.log(new Date(), 'starting a thing');
 
 const {
+  MCAuthType,
   MCHostIP,
   MCPassword,
   MCUsername,
-  MCAuthType,
   actionPhrase,
 } = require('./dotenv');
 const {
   BOT_HOME,
   ROLLER_COASTER,
   SPA,
+  SPA_POOL,
 } = require('./locations');
  
 // globals to reuse movement declarations, maybe a bad thing, guess we'll see
@@ -25,8 +34,8 @@ let movements;
 const options = {
   auth: MCAuthType,
   host: MCHostIP,
-  username: MCUsername,
   password: MCPassword,
+  username: MCUsername,
 };
 
 const bot = mineflayer.createBot(options);
@@ -142,6 +151,13 @@ bot.on('chat', (username, message) => {
       return;
     }
 
+    if (command.includes('spa pool')) {
+      bot.chat('spa pool time');
+      moveToCoordinates(bot, SPA_POOL, movements, 'I like turtles.');
+
+      return;
+    }
+
     if (command.includes('spa')) {
       bot.chat('spa time');
       moveToCoordinates(bot, SPA, movements, 'What is your spaghetti policy here?');
@@ -168,8 +184,14 @@ bot.on('chat', (username, message) => {
     }
 
     if (command.includes('inventory')) {
-      console.log(new Date(), 'inventory', bot.inventory);
+      bot.chat(`I have ${displayInventoryItems()}`);
 
+      return;
+    }
+
+    if (command.includes('stats')) {
+
+      bot.chat(`my health is at ${bot.health} and my food is at ${bot.food}`);
       bot.chat(`I have ${displayInventoryItems()}`);
 
       return;
@@ -181,19 +203,51 @@ bot.on('chat', (username, message) => {
       return;
     }
 
-    // if none match, fetch and display a random quote from one of the endpoints
-    sayQuote();
+    if (command.includes('cat fact')) {
+      sayFetch(fetchRandomCatFact, 'cat fact');
+
+      return;
+    }
+
+    if (command.includes('dad joke')) {
+      sayFetch(fetchRandomDadJoke, 'dad joke');
+      return;
+    }
+
+    if (command.includes('chuck norris joke')) {
+      sayFetch(fetchRandomChuckNorrisJoke, 'chuck norris joke');
+      return;
+    }
+
+    if (command.includes('a joke')) {
+      sayFetch(fetchRandomJoke, 'joke');
+      return;
+    }
+
+    if (command.includes('a quote')) {
+      sayFetch(fetchRandomQuote, 'quote');
+      return;
+    }
+
+    if (command.includes('a fact')) {
+      sayFetch(fetchRandomFact, 'fact');
+      return;
+    }
+
+    // if none match, fetch and display a random response from one of the endpoints
+    sayFetch(fetchRandomResponse, 'response');
   }
 });
 
-function sayQuote () {
-  // if none match, fetch and display a random quote from one of the endpoints
-  return fetchRandomQuote()
+
+// stop trying to make fetch a thing
+function sayFetch (fetchSource, name) {
+  return fetchSource()
     .then((data) => {
       bot.chat(data.quote);
     })
     .catch(() => {
-      bot.chat('derp derp, failed to fetch quote for some reason :/');
+      bot.chat(`derp derp, failed to fetch ${name} for some reason :/`);
     });
 }
 
@@ -257,6 +311,8 @@ function eatUntilFull () {
         .then(eatUntilFull)
         .catch((error) => console.error('eating error', error));
     });
+  } else {
+    bot.chat('me no hungee');
   }
 }
 
@@ -321,7 +377,9 @@ function moveToCoordinates (bot, coordinates, movements, message) {
 
 function initBotSpeech () {
   // one hour
-  setInterval(sayQuote, 1000 * 60 * 60);
+  setInterval(() => {
+    sayFetch(fetchRandomResponse, 'response');
+  }, 1000 * 60 * 60);
 }
 
 function initBotMovement () {
