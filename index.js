@@ -184,15 +184,12 @@ bot.on('chat', (username, message) => {
     }
 
     if (command.includes('inventory')) {
-      console.log(new Date(), 'inventory', bot.inventory);
-
       bot.chat(`I have ${displayInventoryItems()}`);
 
       return;
     }
 
     if (command.includes('stats')) {
-      console.log(new Date(), 'inventory', bot.inventory);
 
       bot.chat(`my health is at ${bot.health} and my food is at ${bot.food}`);
       bot.chat(`I have ${displayInventoryItems()}`);
@@ -245,8 +242,6 @@ bot.on('chat', (username, message) => {
 
 // stop trying to make fetch a thing
 function sayFetch (fetchSource, name) {
-  console.log('name', name);
-  console.log('fetchSource', fetchSource);
   return fetchSource()
     .then((data) => {
       bot.chat(data.quote);
