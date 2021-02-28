@@ -30,6 +30,30 @@ function fetchRandomTheBigLebowskieQuote() {
     .catch((error) => console.error('lebowski.me fetch error:', error));
 }
 
+function fetchRandomCatFact() {
+  return axios.get('https://catfact.ninja/fact')
+    .then((response) => normalizeResponse(response.data.fact))
+    .catch((error) => console.error('catfact.ninja fetch error:', error));
+}
+
+function fetchRandomDadJoke() {
+  const config = {
+    headers: {
+      Accept: 'application/json',
+    }
+  };
+
+  return axios.get('https://icanhazdadjoke.com/', config)
+    .then((response) => normalizeResponse(response.data.joke))
+    .catch((error) => console.error('icanhazdadjoke.com fetch error:', error));
+}
+
+function fetchRandomChuckNorrisJoke() {
+  return axios.get('https://api.chucknorris.io/jokes/random')
+    .then((response) => normalizeResponse(response.data.value))
+    .catch((error) => console.error('api.chucknorris.io fetch error:', error));
+}
+
 // this response is kinda big and it looks like it's a static list so let's cache for good guy greg reasonz
 let TYPE_FIT_QUOTE_CACHE;
 function fetchRandomTypeFitQuote() {
@@ -49,24 +73,47 @@ function fetchRandomTypeFitQuote() {
     .catch((error) => console.error('type.fit fetch error:', error));
 }
 
-function fetchRandomCatFact() {
-  return axios.get('https://catfact.ninja/fact')
-    .then((response) => normalizeResponse(response.data.fact))
-    .catch((error) => console.error('catfact.ninja fetch error:', error));
-}
+const RANDOM_FACT_FUNCTIONS = [
+  fetchRandomCatFact,
+];
+
+const RANDOM_JOKE_FUNCTIONS = [
+  fetchRandomChuckNorrisJoke,
+  fetchRandomDadJoke,
+];
 
 const RANDOM_QUOTE_FUNCTIONS = [
   fetchRandomAlwaysSunnyQuote,
-  fetchRandomTrumpQuote,
-  fetchRandomCatFact,
-  fetchRandomSeinfeldQuote,
   fetchRandomNicolasCageQuote,
-  fetchRandomTypeFitQuote,
+  fetchRandomSeinfeldQuote,
   fetchRandomTheBigLebowskieQuote,
+  fetchRandomTrumpQuote,
+  fetchRandomTypeFitQuote,
+];
+
+const ALL_FUNCTIONS = [
+  ...RANDOM_FACT_FUNCTIONS,
+  ...RANDOM_JOKE_FUNCTIONS,
+  ...RANDOM_QUOTE_FUNCTIONS,
 ];
 
 function fetchRandomQuote() {
   const quoteRequest = getRandomArrayItem(RANDOM_QUOTE_FUNCTIONS);
+  return quoteRequest();
+}
+
+function fetchRandomJoke() {
+  const quoteRequest = getRandomArrayItem(RANDOM_JOKE_FUNCTIONS);
+  return quoteRequest();
+}
+
+function fetchRandomFact() {
+  const quoteRequest = getRandomArrayItem(RANDOM_FACT_FUNCTIONS);
+  return quoteRequest();
+}
+
+function fetchRandomResponse() {
+  const quoteRequest = getRandomArrayItem(ALL_FUNCTIONS);
   return quoteRequest();
 }
 
@@ -81,12 +128,17 @@ function getRandomArrayItem(array) {
 module.exports = {
   fetchRandomAlwaysSunnyQuote: fetchRandomAlwaysSunnyQuote,
   fetchRandomCatFact: fetchRandomCatFact,
+  fetchRandomChuckNorrisJoke: fetchRandomChuckNorrisJoke,
+  fetchRandomDadJoke: fetchRandomDadJoke,
+  fetchRandomFact: fetchRandomFact,
+  fetchRandomJoke: fetchRandomJoke,
   fetchRandomNicolasCageQuote: fetchRandomNicolasCageQuote,
   fetchRandomQuote: fetchRandomQuote,
+  fetchRandomResponse: fetchRandomResponse,
   fetchRandomSeinfeldQuote: fetchRandomSeinfeldQuote,
+  fetchRandomTheBigLebowskieQuote: fetchRandomTheBigLebowskieQuote,
   fetchRandomTrumpQuote: fetchRandomTrumpQuote,
   fetchRandomTypeFitQuote: fetchRandomTypeFitQuote,
-  fetchRandomTheBigLebowskieQuote: fetchRandomTheBigLebowskieQuote,
 }
 
 // utilz
