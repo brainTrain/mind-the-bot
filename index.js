@@ -307,6 +307,7 @@ function equipFood(callback) {
 function eatUntilFull () {
   if (bot.food < 20) {
     equipFood(() => {
+      bot.chat('om nom nom');
       eat()
         .then(eatUntilFull)
         .catch((error) => console.error('eating error', error));
