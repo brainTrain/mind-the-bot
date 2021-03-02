@@ -64,7 +64,11 @@ bot.on('spawn', () => {
 });
 
 bot.on('health', () => {
-  if (bot.health < 15) {
+  console.log(new Date(), 'health:bot.health', bot.health);
+  console.log(new Date(), 'food:bot.food', bot.food);
+  const shouldEat = bot.health < 15 || bot.food < 6;
+
+  if (shouldEat) {
     eatUntilFull();
   }
 });
