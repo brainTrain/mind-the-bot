@@ -42,7 +42,8 @@ const bot = mineflayer.createBot(options);
 bot.loadPlugin(pathfinder);
 
 // globals for re-use
-let MCData;
+let MCData,
+  isEating;
 
 bot.once('spawn', () => {
   // mineflayerViewer(bot, { port: 3000 });
@@ -66,7 +67,10 @@ bot.on('spawn', () => {
 bot.on('health', () => {
   console.log(new Date(), 'health:bot.health', bot.health);
   console.log(new Date(), 'food:bot.food', bot.food);
-  const shouldEat = bot.health < 15 || bot.food < 6;
+
+  const isHungee = bot.food !== 20;
+  const hasLowHealth = bot.health < 15;
+  const shouldEat = hasLowHealth && isHungee && !isEating;
 
   if (shouldEat) {
     eatUntilFull();
@@ -322,7 +326,12 @@ function eatUntilFull () {
 }
 
 function eat () {
-  return bot.consume();
+  isEating = true;
+  return bot
+    .consume()
+    .then(() => {
+      isEating = false;
+    });
 }
 
 function findBedBlocks () {
