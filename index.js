@@ -70,7 +70,7 @@ bot.on('health', () => {
 
   const isHungee = bot.food !== 20;
   const hasLowHealth = bot.health < 15;
-  const shouldEat = hasLowHealth && isHungee;
+  const shouldEat = hasLowHealth && isHungee && !isEating;
 
   if (shouldEat) {
     eatUntilFull();
@@ -313,11 +313,15 @@ function equipFood(callback) {
 }
 
 function eatUntilFull () {
-  if (bot.food < 20 && !isEating) {
+  console.log('eatUntilFull', isEating, bot.food, bot.foodSaturation);
+  if (bot.food < 20) {
     equipFood(() => {
       bot.chat('om nom nom');
       eat()
-        .then(eatUntilFull)
+        .then(() => {
+          // seems the bot.food value doesn't update for a few seconds :(
+          return setTimeout(eatUntilFull, 3000);
+        })
         .catch((error) => console.error('eating error', error));
     });
   } else {
@@ -326,14 +330,18 @@ function eatUntilFull () {
 }
 
 function eat () {
+  console.log('eat:before', isEating, bot.food, bot.foodSaturation);
   isEating = true;
+  console.log('eat:after', isEating, bot.food, bot.foodSaturation);
   return bot
     .consume()
     .then(handleDoneEating);
 }
 
 function handleDoneEating () {
+  console.log('handleDoneEating:before', isEating, bot.food, bot.foodSaturation);
   isEating = false;
+  console.log('handleDoneEating:after', isEating, bot.food, bot.foodSaturation);
 }
 
 function findBedBlocks () {
