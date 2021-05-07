@@ -1,6 +1,7 @@
 const mineflayer = require('mineflayer');
 const { pathfinder, Movements } = require('mineflayer-pathfinder');
 const { GoalNear, GoalFollow } = require('mineflayer-pathfinder').goals;
+const { askEliza, getElizaInitial } = require('./eliza-response');
 // const mineflayerViewer = require('prismarine-viewer').mineflayer;
 const fs = require('fs');
 const {
@@ -38,12 +39,21 @@ const options = {
   username: MCUsername,
 };
 
+const chatBotModes = {
+  DEFAULT: 'DEFAULT',
+  ELIZA: 'ELIZA',
+};
+
 const bot = mineflayer.createBot(options);
 bot.loadPlugin(pathfinder);
 
 // globals for re-use
 let MCData,
-  isEating = false;
+  isEating = false,
+  // init chat bot mode to empty 
+  chatBotMode = chatBotModes.DEFAULT,
+  ignoreActionPhraseUser;
+
 
 bot.once('spawn', () => {
   // mineflayerViewer(bot, { port: 3000 });
@@ -201,6 +211,7 @@ bot.on('chat', (username, message) => {
 
       bot.chat(`my health is at ${bot.health} and my food is at ${bot.food}`);
       bot.chat(`I have ${displayInventoryItems()}`);
+      bot.chat(`I am in ${chatBotMode} mode`);
 
       return;
     }
@@ -242,10 +253,57 @@ bot.on('chat', (username, message) => {
       return;
     }
 
+    if (command.includes('set chat mode')) {
+      const commandArray = command.split(' ');
+      const mode = commandArray[commandArray.length - 1];
+      setChatBotMode(mode, username);
+      return;
+    }
+
+    modeHandlers[chatBotMode](command, username);
+  }
+
+  // let the eliza session feel moar natural
+  if (ignoreActionPhraseUser === username) {
+    talkToEliza(message, username);
+  }
+
+});
+
+const modeHandlers = {
+  [chatBotModes.DEFAULT]: function (command, username) {
     // if none match, fetch and display a random response from one of the endpoints
     sayFetch(fetchRandomResponse, 'response');
-  }
-});
+  },
+  [chatBotModes.ELIZA]: function (command, username) {
+    talkToEliza(command, username);
+  },
+};
+
+const setModeHandlers = {
+  [chatBotModes.DEFAULT]: function (username) {
+    ignoreActionPhraseUser = undefined;
+    bot.chat('damn I\'m hella basic -- mode.');
+  },
+  [chatBotModes.ELIZA]: function (username) {
+    ignoreActionPhraseUser = username;
+    const elizaResponse = getElizaInitial();
+    bot.chat(`${elizaResponse} ${username}`);
+  },
+};
+
+function setChatBotMode (mode, username) {
+  const sanitizedMode = mode.toUpperCase();
+  const setModeCallback = setModeHandlers[sanitizedMode];
+
+  chatBotMode = chatBotModes[sanitizedMode] || chatBotModes.DEFAULT;
+  setModeHandlers[chatBotMode](username);
+}
+
+function talkToEliza (message, username) {
+  const elizaResponse = askEliza(message);
+  bot.chat(`${elizaResponse} ${username}`);
+}
 
 
 // stop trying to make fetch a thing
@@ -313,7 +371,6 @@ function equipFood(callback) {
 }
 
 function eatUntilFull () {
-  console.log('eatUntilFull', isEating, bot.food, bot.foodSaturation);
   if (bot.food < 20) {
     equipFood(() => {
       bot.chat('om nom nom');
@@ -330,18 +387,15 @@ function eatUntilFull () {
 }
 
 function eat () {
-  console.log('eat:before', isEating, bot.food, bot.foodSaturation);
   isEating = true;
-  console.log('eat:after', isEating, bot.food, bot.foodSaturation);
+
   return bot
     .consume()
     .then(handleDoneEating);
 }
 
 function handleDoneEating () {
-  console.log('handleDoneEating:before', isEating, bot.food, bot.foodSaturation);
   isEating = false;
-  console.log('handleDoneEating:after', isEating, bot.food, bot.foodSaturation);
 }
 
 function findBedBlocks () {
