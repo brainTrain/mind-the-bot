@@ -55,7 +55,7 @@ Set values for the environment variables
 ##### Eliza
   * Bot goes into Eliza mode.
     * The user who sets the bot in this mode can talk to the bot without using the action phrase, the bot will respond to all chats this user sends. This currently only works for one user at a time.
-  * Bot responds as Eliza if you other users say the action phrase but the command doesn't match any of the existing commands.
+    * Bot responds as Eliza if you other users say the action phrase but the command doesn't match any of the existing commands.
   * site: [https://www.masswerk.at/elizabot/](https://www.masswerk.at/elizabot/)
   * npm: [https://www.npmjs.com/package/elizabot](https://www.npmjs.com/package/elizabot)
 
