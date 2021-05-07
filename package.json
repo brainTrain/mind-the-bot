@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
+    "elizabot": "^0.0.3",
     "minecraft-data": "^2.74.0",
     "mineflayer": "^2.41.0",
     "mineflayer-armor-manager": "^1.4.0",
