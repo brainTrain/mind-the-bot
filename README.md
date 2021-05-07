@@ -1,4 +1,4 @@
-# minecraft botz
+# Minecraft Botz
 _This bot remote controls a normal minecraft account, if you want to play with your bot the easiest way is to just pay for a new mojang account for your bot._
 
 _This bot is built using [mineflayer](https://github.com/PrismarineJS/mineflayer)_
@@ -29,8 +29,8 @@ Set values for the environment variables
 
 ## Commands
 
-### movement
-| command | Description |
+### Movement
+| Command | Description |
 |------| ------------|
 | "follow me" | Bot follows the user who made the command. |
 | "unfollow me", "leave me alone", "go away" | Stops bot from following the user who made the command. |
@@ -39,22 +39,35 @@ Set values for the environment variables
 | "spa pool" | Bot goes to the spa pool coordinates. |
 | "roller coaster" | Bot goes to the roller coaster coordinates. |
 
-### actions
-| command | Description |
+### Actions
+| Command | Description |
 |------| ------------|
 | "to bed", "to sleep" | Bot goes to bed, you might need to run this one twice for it to work lol. |
 | "spin" | Bot does a terrible job at spinning. |
 | "eat" | Bot eats until full or food runs out. The bot will also eat automatically if its health and food are low enough. |
+| "set chat mode" | Lets you set [chat mode](#chat-modes) for bot. |
 
-### stats
-| command | Description |
+#### Chat Modes
+
+##### Default
+  * Bot says a random quote if you use the action phrase but your command doesn't match any of the existing commands.
+
+##### Eliza
+  * Bot goes into Eliza mode.
+    * The user who sets the bot in this mode can talk to the bot without using the action phrase, the bot will respond to all chats this user sends. This currently only works for one user at a time.
+  * Bot responds as Eliza if you other users say the action phrase but the command doesn't match any of the existing commands.
+  * site: [https://www.masswerk.at/elizabot/](https://www.masswerk.at/elizabot/)
+  * npm: [https://www.npmjs.com/package/elizabot](https://www.npmjs.com/package/elizabot)
+
+### Stats
+| Command | Description |
 |------| ------------|
 | "stats" | Bot says what's in its inventory, its health and food levels, and the chat mode. |
 | "inventory" | Bot says what's in its inventory. |
 | "health" | Bot says its health and food levels. |
 
-### quotes/jokes/facts
-| command | Description |
+### Quotes/Jokes/Facts
+| Command | Description |
 |------| ------------|
 | "cat fact" | Bot says a random [cat fact](#cat-facts)! 😸 |
 | "a fact" | Bot says a random [fact](#facts) (we only have cat facts for now). |
