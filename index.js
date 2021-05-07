@@ -44,15 +44,16 @@ const chatBotModes = {
   ELIZA: 'ELIZA',
 };
 
-// init chat bot mode to empty 
-let chatBotMode = chatBotModes.DEFAULT;
-
 const bot = mineflayer.createBot(options);
 bot.loadPlugin(pathfinder);
 
 // globals for re-use
 let MCData,
-  isEating = false;
+  isEating = false,
+  // init chat bot mode to empty 
+  chatBotMode = chatBotModes.DEFAULT,
+  ignoreActionPhraseUser;
+
 
 bot.once('spawn', () => {
   // mineflayerViewer(bot, { port: 3000 });
@@ -261,6 +262,12 @@ bot.on('chat', (username, message) => {
 
     modeHandlers[chatBotMode](command, username);
   }
+
+  // let the eliza session feel moar natural
+  if (ignoreActionPhraseUser === username) {
+    talkToEliza(message, username);
+  }
+
 });
 
 const modeHandlers = {
@@ -273,6 +280,18 @@ const modeHandlers = {
   },
 };
 
+const setModeHandlers = {
+  [chatBotModes.DEFAULT]: function (username) {
+    ignoreActionPhraseUser = undefined;
+    bot.chat('damn I\'m hella basic -- mode.');
+  },
+  [chatBotModes.ELIZA]: function (username) {
+    ignoreActionPhraseUser = username;
+    const elizaResponse = getElizaInitial();
+    bot.chat(`${elizaResponse} ${username}`);
+  },
+};
+
 function setChatBotMode (mode, username) {
   const sanitizedMode = mode.toUpperCase();
   const setModeCallback = setModeHandlers[sanitizedMode];
@@ -280,16 +299,6 @@ function setChatBotMode (mode, username) {
   chatBotMode = chatBotModes[sanitizedMode] || chatBotModes.DEFAULT;
   setModeHandlers[chatBotMode](username);
 }
-
-const setModeHandlers = {
-  [chatBotModes.DEFAULT]: function (username) {
-    bot.chat('damn I\'m hella basic -- mode.');
-  },
-  [chatBotModes.ELIZA]: function (username) {
-    const elizaResponse = getElizaInitial();
-    bot.chat(`${elizaResponse} ${username}`);
-  },
-};
 
 function talkToEliza (message, username) {
   const elizaResponse = askEliza(message);
