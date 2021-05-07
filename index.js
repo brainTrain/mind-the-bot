@@ -105,6 +105,7 @@ bot.on('chat', (username, message) => {
     // unfollow needs to happen before follow cuz
     // 'follow me' is a substring of 'unfollow me'
     const shouldUnFollow = command.includes('unfollow me') ||
+      command.includes('go away') ||
       command.includes('leave me alone');
     if (shouldUnFollow) {
       bot.chat(`fine, ${username}, peace oooot`);
@@ -120,14 +121,7 @@ bot.on('chat', (username, message) => {
       return;
     }
 
-    if (command.includes('teleport to me')) {
-      bot.chat(`/teleport ${username}!`);
-
-      return;
-    }
-
     const shouldGoHome = command.includes('go home') ||
-      command.includes('go away') ||
       command.includes('your home') ||
       command.includes('your house');
     if (shouldGoHome) {
@@ -210,12 +204,6 @@ bot.on('chat', (username, message) => {
       bot.chat(`my health is at ${bot.health} and my food is at ${bot.food}`);
       bot.chat(`I have ${displayInventoryItems()}`);
       bot.chat(`I am in ${chatBotMode} mode`);
-
-      return;
-    }
-
-    if (command.includes('restart')) {
-      restartNodemon();
 
       return;
     }
