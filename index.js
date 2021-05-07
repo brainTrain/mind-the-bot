@@ -70,8 +70,6 @@ bot.on('spawn', () => {
   } else {
     bot.chat('all by myself');
   }
-
-  moveToCoordinates(bot, BOT_HOME, movements, 'just got home');
 });
 
 bot.on('health', () => {
@@ -441,6 +439,7 @@ function cancelGoal (bot, player, movements) {
 
 function moveToCoordinates (bot, coordinates, movements, message) {
   const goal = new GoalNear(coordinates.x, coordinates.y, coordinates.z, 1);
+
   if (message) {
     goal.message = message;
   }
