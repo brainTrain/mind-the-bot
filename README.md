@@ -45,7 +45,7 @@ Set values for the environment variables
 | "to bed", "to sleep" | Bot goes to bed, you might need to run this one twice for it to work lol. |
 | "spin" | Bot does a terrible job at spinning. |
 | "eat" | Bot eats until full or food runs out. The bot will also eat automatically if its health and food are low enough. |
-| "set chat mode" | Lets you set [chat mode](#chat-modes) for bot. |
+| "set chat mode" | Lets you set [chat mode](#chat-modes) for bot. You must add one of the chat mode types listed in [Chat Modes](#chat-modes) as the last word in your command. If you don't set a command in that list it will set it to [Default](#default). |
 
 #### Chat Modes
 
