@@ -28,7 +28,7 @@ Set values for the environment variables
 | `ACTION_PHRASE` | Word or phrase that the bot should choose as a delimiter. The bot will parse the rest of that chat message as a command and respond appropriately. | String |
 
 ## Commands
-_Commands work by adding the `ACTION_PHRASE` to your minecraft chat message. Anything said after your `ACTION_PHRASE` will be parsed as a command, and a substring match is used to trigger the proper response. The Command listed in these tables are just the substring match, if you add extra words to be more conversational you'll still trigger the proper response._
+_You can trigger a command by adding the `ACTION_PHRASE` to your minecraft chat message. Any text typed after your `ACTION_PHRASE` in the same minecraft chat message will be parsed as a command, and a substring match is used to trigger the proper response. The Command listed in these tables are just the substring match, if you add extra words to be more conversational you'll still trigger the proper response._
 
 ### Movement
 | Command | Description |
