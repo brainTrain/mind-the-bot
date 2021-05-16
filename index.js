@@ -181,6 +181,17 @@ bot.on('chat', (username, message) => {
       return;
     }
 
+    if (command.includes('look command')) {
+      const yawPitchString = command.split('look command')[1];
+      const [ rawYaw, rawPitch ] = yawPitchString.split(',');
+      const yaw = parseFloat(rawYaw);
+      const pitch = parseFloat(rawPitch);
+
+      look(yaw, pitch);
+
+      return;
+    }
+
     if (command.includes('eat')) {
       eatUntilFull();
 
@@ -340,6 +351,10 @@ function lookAround (total, prevYaw, prevPitch, totalSame) {
       bot.look(0, 0);
     }
   });
+}
+
+function look (yaw, pitch) {
+  bot.look(yaw, pitch);
 }
 
 function equipFood(callback) {
