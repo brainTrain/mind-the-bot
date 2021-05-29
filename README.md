@@ -33,20 +33,20 @@ _You can trigger a command by adding the `ACTION_PHRASE` to your minecraft chat 
 ### Movement
 | Command | Description |
 |------| ------------|
-| "follow me" | Bot follows the user who made the command. |
-| "unfollow me", "leave me alone", "go away" | Stops bot from following the user who made the command. |
-| "go home", "your home", "your house" | Bot goes to its house coordinates. |
-| "spa" | Bot goes to the spa coordinates. |
-| "spa pool" | Bot goes to the spa pool coordinates. |
-| "roller coaster" | Bot goes to the roller coaster coordinates. |
+| `follow me` | Bot follows the user who made the command. |
+| `unfollow me`, `leave me alone`, `go away` | Stops bot from following the user who made the command. |
+| `go home`, `your home`, `your house` | Bot goes to its house coordinates. |
+| `spa` | Bot goes to the spa coordinates. |
+| `spa pool` | Bot goes to the spa pool coordinates. |
+| `roller coaster` | Bot goes to the roller coaster coordinates. |
 
 ### Actions
 | Command | Description |
 |------| ------------|
-| "to bed", "to sleep" | Bot goes to bed, you might need to run this one twice for it to work lol. |
-| "spin" | Bot does a terrible job at spinning. |
-| "eat" | Bot eats until full or food runs out. The bot will also eat automatically if its health and food are low enough. |
-| "set chat mode" | Lets you set [chat mode](#chat-modes) for bot. You must add one of the chat mode types listed in [Chat Modes](#chat-modes) as the last word in your command. If you don't set a command in that list it will set it to [Default](#default). |
+| `to bed`, `to sleep` | Bot goes to bed, you might need to run this one twice for it to work lol. |
+| `spin` | Bot does a terrible job at spinning. |
+| `eat` | Bot eats until full or food runs out. The bot will also eat automatically if its health and food are low enough. |
+| `set chat mode` | Lets you set [chat mode](#chat-modes) for bot. You must add one of the chat mode types listed in [Chat Modes](#chat-modes) as the last word in your command. If you don't set a command in that list it will set it to [Default](#default). |
 
 #### Chat Modes
 
@@ -63,19 +63,19 @@ _You can trigger a command by adding the `ACTION_PHRASE` to your minecraft chat 
 ### Stats
 | Command | Description |
 |------| ------------|
-| "stats" | Bot says what's in its inventory, its health and food levels, and the chat mode. |
-| "inventory" | Bot says what's in its inventory. |
-| "health" | Bot says its health and food levels. |
+| `stats` | Bot says what's in its inventory, its health and food levels, and the chat mode. |
+| `inventory` | Bot says what's in its inventory. |
+| `health` | Bot says its health and food levels. |
 
 ### Quotes/Jokes/Facts
 | Command | Description |
 |------| ------------|
-| "cat fact" | Bot says a random [cat fact](#cat-facts)! 😸 |
-| "a fact" | Bot says a random [fact](#facts) (we only have cat facts for now). |
-| "dad joke" | Bot says a [dad joke](#dad-jokes). |
-| "chuck norris joke" | Bot says a [Chuck Norris joke](#chuck-norris-jokes). |
-| "a joke" | Bot says a random joke [joke](#jokes). |
-| "a quote" | Bot says a random [quote](#quotes). |
+| `cat fact` | Bot says a random [cat fact](#cat-facts)! 😸 |
+| `a fact` | Bot says a random [fact](#facts) (we only have cat facts for now). |
+| `dad joke` | Bot says a [dad joke](#dad-jokes). |
+| `chuck norris joke` | Bot says a [Chuck Norris joke](#chuck-norris-jokes). |
+| `a joke` | Bot says a random joke [joke](#jokes). |
+| `a quote` | Bot says a random [quote](#quotes). |
 
 ### APIs
 
