@@ -14,7 +14,7 @@ _This bot is built using [mineflayer](https://github.com/PrismarineJS/mineflayer
 Start by copying the `.env-template` file to a `.env` file
 
 ```console
-$ cp .env-template .env
+cp .env-template .env
 ```
 
 Set values for the environment variables
